@@ -1,59 +1,87 @@
 from os import system
 import random
 
+# definir todos os navios do jogador, feito no começo do jogo
+# Sao 1 porta aviao, 2 navios tanques, 3 contra torpedos, 4 submarinos
+# cada um com seu tamanho especifico
+# dividido em mais funcoes para ser mais facil de entender e de debugar
 def colocarNavios(tabuleiro):
     print("Defina seus navios no tabuleiro")
 
+    # chama uma funcao para verificar as entradas e definir onde navio ira ficar
+    # só tem 1 porta aviao
     colocarNavio("porta aviao", 5, tabuleiro, 1)
     
+    # chama uma funcao para verificar as entradas e definir onde navio ira ficar
+    # tem um while pra colocar os 2 navios tanques e colocam qual o navio esta pra deixar claro para o usuário
     na=1
     while na <= 2:
         colocarNavio("navio tanque", 4, tabuleiro, na)
         na = na + 1
 
+    # chama uma funcao para verificar as entradas e definir onde navio ira ficar
+    # tem um while pra colocar os 3 contra torpedo e colocam qual o navio esta pra deixar claro para o usuário
     ct = 1
     while ct <= 3:
         colocarNavio("contra torpedo", 3, tabuleiro, ct)
         ct = ct + 1
 
+    # chama uma funcao para verificar as entradas e definir onde navio ira ficar
+    # tem um while pra colocar os 4 submarino e colocam qual o navio esta pra deixar claro para o usuário
     s=1
     while s <= 4:
         colocarNavio("submarino", 2, tabuleiro, s)
         s = s + 1
 
+#verfifica a se posicao do navio é valida e depois, se a direção do navio é valida
 def colocarNavio(nome, tamanho, tabuleiro, quantidade):
-    posicao= input("Insira a posição do navio (linhaxcolunaxposicao) "+ nome + " " + str(quantidade)+": ")
-    comSucesso = validaColocarNavio(tabuleiro, posicao, tamanho)
-    while not comSucesso:
-        posicao= input("Insira a posição do navio(LC): ")
-        comSucesso = validaColocarNavio(tabuleiro, posicao, tamanho)
+    # imprime algumas indicações pro usuário: posicao da entrada, nome e qual navio esta sendo utilizada
+    posicao= input("Insira a posição do navio (linhaxcoluna) "+ nome + " " + str(quantidade)+": ")
+    #verifica se a posicao inserida é valida
+    comSucesso = validaColocarNavio(tabuleiro, posicao)
+    while not comSucesso: # repete enquanto a posicao é invalida
+        posicao= input("Insira a posição do navio (linhaxcoluna): ")
+        comSucesso = validaColocarNavio(tabuleiro, posicao)
+
     direcaoCorreta = False
-    while not direcaoCorreta:
+    while not direcaoCorreta: # enquanto a direcao nao é valida repete
+        #informa o usuário que a direção deve ser v(vertical) ou h(horizontal)
         direcao = input("Insira a direção do navio(v/h): ")
+        # verifica se é v ou h
         if( direcao == 'v' or direcao == 'h'):
-            definirNavios(tabuleiro, int(posicao[0]), int(posicao[1]), direcao, tamanho)
-            direcaoCorreta = True
+            # coloca o navio se cabe na malha
+            cabeNaMalha = False
+            while not cabeNaMalha:
+                cabeNaMalha = definirNavios(tabuleiro, int(posicao[0]), int(posicao[1]), direcao, tamanho)
+            direcaoCorreta = True # encerra o while
         else:
             print("A direção dever ser v(vertical) ou h(horizontal)")
 
+# colocar o navio, se cabe na malha
 def definirNavios(tabuleiro, linha, coluna, direcao, tamanho):
-    if direcao == 'h':
+    if direcao == 'h': # se o navio for posicionado na horizontal
+        # se o tamanho do navio, mas a coluna que ele vai comecar a ser posicionado, é menor que o tamanho da malha
         if(tamanho+coluna > 10): 
             print("Navio não cabe na malha.Tente novamente")
-        else:
-            while tamanho > 0:
-                tabuleiro[linha][coluna] = 'O'
-                tamanho = tamanho - 1
-                coluna = coluna + 1
-    else:
+            return False
+        else: # se cabe
+            while tamanho > 0: # enquanto o tamanho é maior que zero
+                tabuleiro[linha][coluna] = 'O' # adiciona uma 'parte' do navio
+                tamanho = tamanho - 1 # diminui o tamanho para continuar a colocar
+                coluna = coluna + 1 #aumenta a coluna para do lado, enquanto o tamanho for maior que zero, a linha permanece a mensma
+    else: # se o navio for posicionado na vertical
+        # se o tamanho do navio, mas a linha que ele vai comecar a ser posicionado, é menor que o tamanho da malha
         if(tamanho+linha > 10): 
             print("Navio não cabe na malha.Tente novamente")
-        else:
-            while tamanho > 0:
-                tabuleiro[linha][coluna] = 'O'
-                tamanho = tamanho - 1
-                linha = linha + 1
+            return False
+        else: # se cabe
+            while tamanho > 0: # enquanto o tamanho é maior que zero
+                tabuleiro[linha][coluna] = 'O' # adiciona uma 'parte' do navio
+                tamanho = tamanho - 1 # diminui o tamanho para continuar a colocar
+                linha = linha + 1 #aumenta a linha para do baixo, enquanto o tamanho for maior que zero, a coluna permanece a mensma
+    return True # se checar até aqui é porque cabe
 
+#imprime as regras para o jogador
 def imprimeRegras(jogador):    
     print("##------------------------------------------------------------##")
     print("##------------------------ BATALHA NAVAL ---------------------##")
@@ -62,6 +90,8 @@ def imprimeRegras(jogador):
     print("## Você é o jogador ", jogador, ". Para sair do jogo, digite 'sair'    ##")
     return
 
+# imprime um tabuleiro do lado do outro, por questões de usabilidade
+# star wars reference ;)
 def imprimeTabuleiros(tabuleiro1, tabuleiro2):
     
     print("              Defenda |o|                                      Ataque |o|")
@@ -109,6 +139,7 @@ def imprimeTabuleiros(tabuleiro1, tabuleiro2):
     print("  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻            ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻")
     return
 
+# cria o tabuleiro (10x10) vazio
 def criaTabuleiro():
 	novoTabuleiro = []
 	for _ in range(10):
@@ -116,7 +147,8 @@ def criaTabuleiro():
 	return novoTabuleiro
 
 
-def validaColocarNavio(tabuleiro, jogada, tamanho) :
+# valida a posicao na hora de colocar o navio
+def validaColocarNavio(tabuleiro, jogada) :
     if jogada == "sair" : 
         return True
     if len(jogada) != 2 :
@@ -125,11 +157,13 @@ def validaColocarNavio(tabuleiro, jogada, tamanho) :
     if tabuleiro[int(jogada[0])][int(jogada[1])] != '-':
         print("\tEssa jogada já foi feita. Tente novamente") 
         return False
-    if int(jogada[0]) >10 or int(jogada[1]) >10:
+    if int(jogada[0]) >0 or int(jogada[1]) >10:
         print("\tO navio não cabe no tabuleiro. Tente novamente") 
         return False
     return True
 
+
+# valida a jogada
 def validaJogada(tabuleiro, jogada) :
     if jogada == "sair" : 
         return True
@@ -141,6 +175,7 @@ def validaJogada(tabuleiro, jogada) :
         return False
     return True
 
+# executa o tiro e ver se acerta algo ou nao
 def executarTiro(tabuleiro, posicao):
     linha = posicao[0]
     coluna = posicao[1]
