@@ -1,3 +1,7 @@
+# Batalha Naval - cliente
+# Aline Guimarães e Alice Ribeiro
+# Repositório github: https://github.com/alinerguio/sockets
+
 from os import system
 import random
 
