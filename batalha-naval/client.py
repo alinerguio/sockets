@@ -5,7 +5,7 @@ import socket
 from regrasDoJogo import *
 
 def client():
-    host = '192.168.0.101'
+    host = '192.168.0.101' # ip da rede a ser conectada - deve ser mudado de acordo com o ip de conexão do servidor
     port = 5000
 
     em_jogo = True
