@@ -1,7 +1,5 @@
 # Trabalho-Redes-Socket
-Implementação de uma batalha naval utilizando sockets em python
-
-Incluindo implementações básicas feitas para o estudo
+Implementação de uma batalha naval utilizando sockets em python para disciplina de Redes.
 
 Tambem disponível no seguinte repositório: [ciceribeiroo](https://github.com/ciceribeiroo/Trabalho-Redes-Socket) 
 
