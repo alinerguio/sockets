@@ -7,7 +7,7 @@ from regrasDoJogo import *
 
 def client():
     # ip da rede a ser conectada - deve ser mudado de acordo com o ip de conexão do servidor
-    host = '127.0.0.1' 
+    host = '192.168.0.101' 
     port = 5000 # porta a ser utilizada
 
     # variavel que controla se um jogo está em andamento e seu encerramento

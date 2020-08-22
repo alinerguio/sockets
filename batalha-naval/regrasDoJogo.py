@@ -33,7 +33,7 @@ def colocarNavios(tabuleiro):
         colocarNavio("submarino", 2, tabuleiro, s)
         s = s + 1
 
-#verfifica a se posicao do navio é valida e depois, se a direção do navio é valida
+#verfifica a se posicao do navio é valida, se a direção do navio é valida e se o navio cabe na malha
 def colocarNavio(nome, tamanho, tabuleiro, quantidade):
     # imprime algumas indicações pro usuário: posicao da entrada, nome e qual navio esta sendo utilizada
     posicao= input("Insira a posição do navio (linhaxcoluna) "+ nome + " " + str(quantidade)+": ")
