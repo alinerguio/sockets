@@ -35,3 +35,5 @@ A ideia principal do jogo é que cada jogador tem dois tabuleiros, um seu e um d
 Um jogador faz uma jogada, que é validada. Se essa for correta, ele ira manda-la para o outro jogador, para que as opeações ocorram na matriz completa. Se tem algo, tal marcação sera X e ira retornar true. Se não a marcação é . e retornará true.  Essa marcação volta para o jogador original para que aparecça na malha escondida.
 
 O jogo termina quando um dos jogadores descobrir todas os navios(controlado por um navegador que é incrementado toda vez que algo é atingido).
+
+No arquivo 'Posicao Navios', você encontra os dados pra uma definicao dos navios que pode ser usada para iniciar o jogo de forma rápida e prática.
