@@ -4,7 +4,7 @@ Implementação de uma batalha naval utilizando sockets em python para disciplin
 Tambem disponível no seguinte repositório: [ciceribeiroo](https://github.com/ciceribeiroo/Trabalho-Redes-Socket) 
 
 ## A implementação principal está na página batalhaNaval
-Para rodar o jogo, é necessaria a instalacao de python3 (pip install python3).
+Para rodar o jogo, é necessaria a instalacao de python3 (*pip install python3*).
 
 Para executar a aplicação, servidor deve ser rodado primeiro. Após isso, em outro cmd, o cliente deve ser rodado. As linhas de comando sao respectivamente:
 
