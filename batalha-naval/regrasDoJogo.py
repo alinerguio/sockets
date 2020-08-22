@@ -38,10 +38,10 @@ def colocarNavio(nome, tamanho, tabuleiro, quantidade):
     # imprime algumas indicações pro usuário: posicao da entrada, nome e qual navio esta sendo utilizada
     posicao= input("Insira a posição do navio (linhaxcoluna) "+ nome + " " + str(quantidade)+": ")
     #verifica se a posicao inserida é valida
-    comSucesso = validaColocarNavio(tabuleiro, posicao)
+    comSucesso = validaJogada(tabuleiro, posicao)
     while not comSucesso: # repete enquanto a posicao é invalida
         posicao= input("Insira a posição do navio (linhaxcoluna): ")
-        comSucesso = validaColocarNavio(tabuleiro, posicao)
+        comSucesso = validaJogada(tabuleiro, posicao)
 
     direcaoCorreta = False
     while not direcaoCorreta: # enquanto a direcao nao é valida repete
@@ -95,7 +95,7 @@ def imprimeRegras(jogador):
 def imprimeTabuleiros(tabuleiro1, tabuleiro2):
     
     print("              Defenda |o|                                      Ataque |o|")
-    print("  0   1   2   3   4   5   6   7   8   9            0   1   2   3   4   5   6   7   8   9")
+    print("   0   1   2   3   4   5   6   7   8   9              0   1   2   3   4   5   6   7   8   9")
     print("  ______________________________________             ______________________________________")
     print("0| %c | %c | %c | %c | %c | %c | %c | %c | %c | %c           0| %c | %c | %c | %c | %c | %c | %c | %c | %c | %c " 
         % ( tabuleiro1[0][0], tabuleiro1[0][1], tabuleiro1[0][2], tabuleiro1[0][3], tabuleiro1[0][4], tabuleiro1[0][5], tabuleiro1[0][6], tabuleiro1[0][7], tabuleiro1[0][8],tabuleiro1[0][9],
@@ -145,23 +145,6 @@ def criaTabuleiro():
 	for _ in range(10):
 		novoTabuleiro.append(['-','-','-','-','-','-','-','-','-', '-'])
 	return novoTabuleiro
-
-
-# valida a posicao na hora de colocar o navio
-def validaColocarNavio(tabuleiro, jogada) :
-    if jogada == "sair" : 
-        return True
-    if len(jogada) != 2 :
-        print("\tO formato correto é LC!") 
-        return False
-    if tabuleiro[int(jogada[0])][int(jogada[1])] != '-':
-        print("\tEssa jogada já foi feita. Tente novamente") 
-        return False
-    if int(jogada[0]) >0 or int(jogada[1]) >10:
-        print("\tO navio não cabe no tabuleiro. Tente novamente") 
-        return False
-    return True
-
 
 # valida a jogada
 def validaJogada(tabuleiro, jogada) :
