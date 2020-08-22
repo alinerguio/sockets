@@ -1,12 +1,14 @@
 # Trabalho-Redes-Socket
+
 Implementação de uma batalha naval utilizando sockets em python para disciplina de Redes.
 
 Tambem disponível no seguinte repositório: [ciceribeiroo](https://github.com/ciceribeiroo/Trabalho-Redes-Socket) 
 
-## A implementação principal está na página batalhaNaval
+## Execução
+
 Para rodar o jogo, é necessaria a instalacao de python3 (*pip install python3*).
 
-Para executar a aplicação, servidor deve ser rodado primeiro. Após isso, em outro cmd, o cliente deve ser rodado. As linhas de comando sao respectivamente:
+Para executar a aplicação, servidor deve ser rodado primeiro. Após isso, em outro cmd, o cliente deve ser rodado. As linhas de comando são respectivamente:
 
 Para Linux ou Mac: <br> 
 *python3 server.py*<br>
@@ -15,6 +17,8 @@ Para Linux ou Mac: <br>
 Para Windows: <br>
 *py server.py*<br>
 *py client.py*<br>
+
+## Jogo
 
 Após isso, cada jogador irá definir a posição de seus navios na malha 10x10 sendo
   - 1 porta avião de tamanho 5
