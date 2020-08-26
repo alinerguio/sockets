@@ -41,6 +41,7 @@ separador(frame_separa, 11, 16)
 tabuleiro(frame_t2, tabuleiro_2, False, 11)
 
 
+
 #jogar(frame_joga, "Clique na posição a ser atacada!")
 #fim(frame_joga, "Você ganhou!")
 

@@ -4,68 +4,38 @@
 
 from tkinter import *
 import socket
-from regrasDoJogo import *
 from interface import *
 
-def fim(frame_joga, mensagem):
-    Label(frame_joga, text=mensagem, font=("Courier", 40)).grid(sticky=W, row=0)
-
-def server():
+def server(frame_t1, frame_separa, frame_t2, frame_joga):
     host = ''
     port = 5000
 
-    em_jogo = True
+    em_jogo = False
     tabuleiro_proprio = []
     tabuleiro_oponente = []
     atingidos = 0
     jogador = '1'
     quemJoga = '1'
 
-    tabuleiro_proprio = criaTabuleiro() # cria novos tabuleiros
-    tabuleiro_oponente = criaTabuleiro()
+    tabuleiro_proprio = cria_tabuleiro() # cria novos tabuleiros
+    tabuleiro_oponente = cria_tabuleiro()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # instancia o socket tcp
     server_socket.bind((host, port))  # conecta ao servidor
-
-    # criação da janela e seus frames
-    print("checkpoint 1") 
-    menu = Tk()
-    menu.title("Batalha Naval")
-    menu.geometry("870x500")
-    print("checkpoint 2") 
-
-    frame_labels = Frame(menu)
-    frame_labels.grid(sticky=N)
-
-    frame_meio = Frame(menu)
-    frame_meio.grid()
-
-    frame_t1 = Frame(frame_meio)
-    frame_t1.grid(row=0, column=5)
-    frame_separa = Frame(frame_meio)
-    frame_separa.grid(row=0, column=16)
-    frame_t2 = Frame(frame_meio)
-    frame_t2.grid(row=0, column=18)
-
-    frame_joga = Frame(menu)
-    frame_joga.grid(rowspan=5, sticky=SW, pady=20, padx=5)
-
-
-    fim(frame_labels, "Aguardando conexão com cliente...")
-
+    
+    print("Aguardando conexão com cliente...")
+    
     server_socket.listen(2)
     conn, address = server_socket.accept()  # aceita nova conexão
 
-    tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
-    separador(frame_separa, 11, 13)
-    tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
-
-    colocarNavios(frame_joga, tabuleiro_proprio) # insere navios no tabuleiro
-    tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
-    separador(frame_separa, 11, 13)
+    lista_navios = navios()
+    status(frame_joga, "Inserir o navio:")
+    separador(frame_separa, 11, 16)
     tabuleiro(frame_t2, tabuleiro_oponente, False, 11) 
+    em_jogo = insere(frame_joga, frame_t1, tabuleiro_proprio, lista_navios) # insere navios no tabuleiro
 
     while em_jogo:
+
         #---------------------------------------------------------------------------------------------------------------------#
         while(quemJoga == '2'): # enquanto o cliente joga
 
@@ -100,56 +70,56 @@ def server():
                         conn.send(mensagem.encode())
                         quemJoga = '1'
 
-                    tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
+                    tabuleiro(frame_t1, tabuleiro_proprio, False, 0)
                     separador(frame_separa, 11, 13)
                     tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
                         
 #----------------------------------------------------------------------------------------------------------------------#
         while(quemJoga == '1'): # enquanto o servidor joga
-        		jogar(frame_joga, "Atacar!")
-                jogada = # recebe jogada
 
-                while validaJogada(tabuleiro_oponente, jogada) == False: # repete até jogada ser válida
-                    jogada = jogar(frame_joga, "Digite uma jogada válida.") # recebe jogada
+            jogar(frame_joga, "Atacar!", frame_t2, tabuleiro_oponente)
+            jogada = tabuleiro_ataque(frame_t2, tabuleiro_oponente, 11, [])
 
-        
-                if not jogada or jogada == "sair" or jogada == "SAIR": # verifica se esse jogador deseja sair
-                    fim(frame_joga, "Aplicação foi finalizada")
-                    em_jogo = False # finaliza while
-                    quemJoga = '0' # finaliza while
-                    mensagem = '-1'
-                    conn.send(mensagem.encode()) # envia mensagem para outro jogador que saiu 
+            if not jogada or jogada == "sair": # verifica se esse jogador deseja sair
+                fim(frame_joga, "Aplicação foi finalizada")
+                em_jogo = False # finaliza while
+                quemJoga = '0' # finaliza while
+                mensagem = '-1'
+                conn.send(mensagem.encode()) # envia mensagem para outro jogador que saiu 
 
-                else: # joga
+            else: # joga
 
-                    conn.send(jogada.encode()) # envia jogada para outro jogador
-        
-                    jogada_recebida = conn.recv(1024).decode() # recebe resposta sobre acerto ou erro
+                conn.send(jogada.encode()) # envia jogada para outro jogador
 
-                    if jogada_recebida != '': 
-                        linha = jogada[0]
-                        coluna = jogada[1]
-                        if(jogada_recebida == 'X'): # se acertou algum navio
-                            tabuleiro_oponente[int(linha)][int(coluna)] = 'X'
-                            atingidos += 1
-                        else: # se errou
-                            tabuleiro_oponente[int(linha)][int(coluna)] = '.'
-                            quemJoga = '2'
+                jogada_recebida = conn.recv(1024).decode() # recebe resposta sobre acerto ou erro
+
+                if jogada_recebida != '': 
+                    linha = jogada[0]
+                    coluna = jogada[1]
+                    if(jogada_recebida == 'X'): # se acertou algum navio
+                        tabuleiro_oponente[int(linha)][int(coluna)] = 'X'
+                        atingidos += 1
+                    else: # se errou
+                        tabuleiro_oponente[int(linha)][int(coluna)] = '.'
+                        quemJoga = '2'
 
 
-                        tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
-                        separador(frame_separa, 11, 13)
-                        tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
+                    tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
+                    separador(frame_separa, 11, 13)
+                    tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
 
-                        if atingidos == 30: # verifica se ganhou 
-                            fim(frame_joga, "\nVocê Ganhou! Parabéns! :D \n\nJogo Terminado!")
-                            em_jogo = False # finaliza while
-                            quemJoga = '0' # finaliza while
-                            mensagem = 'fim' 
-                            conn.send(mensagem.encode()) # envia mensagem ao outro jogador que ganhou
-    menu.mainloop()              
+                    if atingidos == 30: # verifica se ganhou 
+                        fim(frame_joga, "\nVocê Ganhou! Parabéns! :D \n\nJogo Terminado!")
+                        em_jogo = False # finaliza while
+                        quemJoga = '0' # finaliza while
+                        mensagem = 'fim' 
+                        conn.send(mensagem.encode()) # envia mensagem ao outro jogador que ganhou
+
     conn.close()  # fecha conexão
     
 
 if __name__ == '__main__':
-    server()
+    menu = Tk()
+    frame = cria_janela(menu, "Servidor")
+    server(frame[0], frame[1], frame[2], frame[3])
+    menu.mainloop() 

@@ -4,73 +4,40 @@
 
 from tkinter import *
 import socket
-from regrasDoJogo import *
 from interface import *
 
-def client():
+def client(frame_t1, frame_separa, frame_t2, frame_joga):
     host = '192.168.0.101' # ip da rede a ser conectada - deve ser mudado de acordo com o ip de conexão do servidor
     port = 5000
 
-    em_jogo = True
+    em_jogo = False
     atingidos = 0
     tabuleiro_proprio = []
     tabuleiro_oponente = []
     quemJoga = '1'
 
-    tabuleiro_proprio = criaTabuleiro() # cria novos tabuleiros
-    tabuleiro_oponente = criaTabuleiro()
+    tabuleiro_proprio = cria_tabuleiro() # cria novos tabuleiros
+    tabuleiro_oponente = cria_tabuleiro()
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # instancia o socket tcp
     client_socket.connect((host, port))  # conecta ao servidor
 
-    # criação da janela e seus frames 
-    menu = Tk()
-    menu.title("Batalha Naval")
-    menu.geometry("870x500")
+    lista_navios = navios()
 
-    frame_labels = Frame(menu)
-    frame_labels.grid(sticky=N)
-
-    frame_meio = Frame(menu)
-    frame_meio.grid()
-
-    frame_t1 = Frame(frame_meio)
-    frame_t1.grid(row=0, column=5)
-    frame_separa = Frame(frame_meio)
-    frame_separa.grid(row=0, column=16)
-    frame_t2 = Frame(frame_meio)
-    frame_t2.grid(row=0, column=18)
-
-    frame_joga = Frame(menu)
-    frame_joga.grid(rowspan=5, sticky=SW, pady=20, padx=5)
-
-    # impressão das informações 
-
-    w = Label(frame_labels, text="Meu Jogo", font=("Courier", 20))
-    w.grid(row=0, column=5, padx=150, pady=10)
-    w = Label(frame_labels, text="Jogo Rival", font=("Courier", 20))
-    w.grid(row=0, column=20, padx=150, pady=10)
-
-    tabuleiro(frame_t1, tabuleiro_proprio, True, 0)
-    separador(frame_separa, 11, 13)
+    status(frame_joga, "Inserir o navio:")
+    separador(frame_separa, 11, 16)
     tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
-
-    colocarNavios(frame_joga, tabuleiro_proprio) # insere navios no tabuleiro
+    em_jogo = insere(frame_joga, frame_t1, tabuleiro_proprio, lista_navios) # insere navios no tabuleiro
+    separador(frame_separa, 11, 16)
+    tabuleiro(frame_t2, tabuleiro_oponente, False, 11)  
 
     while em_jogo:
     #------------------------------------------------------------------------------------------------------------------------#
         while(quemJoga == '2'): # enquanto o cliente joga 
-            tabuleiro(frame_t1, tabuleiro_proprio, False, 0)
-            separador(frame_separa, 11, 13)
-            tabuleiro(frame_t2, tabuleiro_oponente, True, 11)
-            jogar(frame_joga, "Atacar!") # recebe jogada
+            jogar(frame_joga, "Atacar!", frame_t2, tabuleiro_oponente)
+            jogada = tabuleiro_ataque(frame_t2, tabuleiro_oponente, 11, [])
 
-            # jogada = jogada(tabuleiro_oponente) 
-
-            while validaJogada(tabuleiro_oponente,jogada) == False : # repete até jogada ser válida
-                jogada = jogar(frame_joga, "Digite uma jogada válida.") # recebe jogada
-
-            if not jogada or jogada == "sair" or jogada == "SAIR": # verifica se esse jogador deseja sair
+            if not jogada or jogada == "sair": # verifica se esse jogador deseja sair
                 fim(frame_joga, "Aplicação foi finalizada")
                 em_jogo = False # finaliza while
                 quemJoga = '0' # finaliza while
@@ -109,9 +76,10 @@ def client():
         while(quemJoga == '1'): # enquanto o servidor joga
 
             if em_jogo:
-            	tabuleiro(frame_t1, tabuleiro_proprio, False, 0)
-            	separador(frame_separa, 11, 13)
-            	tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
+                tabuleiro(frame_t1, tabuleiro_proprio, False, 0)
+                separador(frame_separa, 11, 13)
+                tabuleiro(frame_t2, tabuleiro_oponente, False, 11)
+
                 fim(frame_joga, "\nAguarde a jogada do servidor...")
 
                 jogada = client_socket.recv(1024).decode() # recebe jogada do outro jogador
@@ -127,7 +95,7 @@ def client():
                     quemJoga = '0' # finaliza while
 
                 else: 
-                    sucesso = executarTiro(tabuleiro_proprio, jogada) # verifica a jogada do adversário
+                    sucesso = executar_tiro(tabuleiro_proprio, jogada) # verifica a jogada do adversário
 
                     linha = jogada[0]
                     coluna = jogada[1]
@@ -153,4 +121,7 @@ def client():
     menu.mainloop()
 
 if __name__ == '__main__':
-    client()
+    menu = Tk()
+    frame = cria_janela(menu, "Cliente")
+    client(frame[0], frame[1], frame[2], frame[3])
+    menu.mainloop() 
